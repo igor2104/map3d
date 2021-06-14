@@ -1,0 +1,143 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="weather-icons-master/css/weather-icons.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+    <!-- <script src="https://cdn-webgl.eegeo.com/eegeojs/api/v0.1.780/eegeo.js"></script> -->
+    <script src="https://cdn-webgl.wrld3d.com/wrldjs/dist/latest/wrld.js"></script>
+</head>
+<style>
+  .list{
+    position: fixed; 
+    top: 0;
+    bottom: 0; 
+    z-index:2; 
+    background-color: rgba(255,255,255, .6);
+    overflow-y:scroll;
+  }
+  .listr{
+    right: 0px;
+  }
+  .list ul{
+    padding: 0;
+  }
+  .list li{
+    list-style-type: none;
+    text-align: center;
+    /*border: 1px solid black;*/
+    margin: 10px 5px;
+  }
+  .list a{
+    padding: 10px;
+    display: block;
+  }
+
+  h3{
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .list img{
+    width: 100px;
+    display: block;
+    margin: auto;
+  }
+
+  .list::-webkit-scrollbar-track
+  {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 10px;
+    background-color: #F5F5F5;
+  }
+
+  .list::-webkit-scrollbar
+  {
+    width: 12px;
+    background-color: #F5F5F5;
+  }
+
+  .list::-webkit-scrollbar-thumb
+  {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-color: #555;
+  }
+</style>
+<body>
+    <div class="list" style="">
+      <h3>Достопримечательности</h3>
+      <ul>
+          <li><a class="item btn btn-primary" href="#" data-latitude="40.689347" data-longitude="-74.044511" data-zoom="18"><img src="svoboda.jpg">Статуя Свободы</a></li>
+          <li><a class="item btn btn-primary" href="#" data-latitude="51.500823" data-longitude="-0.124582" data-zoom="18"><img src="big_ben.jpg" alt="">Биг-Бен</a></li>
+          <li><a class="item btn btn-primary" href="#" data-latitude="40.748635" data-longitude="-73.985752" data-zoom="16"><img src="emair.jpg" alt="">Эмпайр-стейт-билдинг</a></li>
+          <li><a class="item btn btn-primary" href="#" data-latitude="51.499533" data-longitude="-0.124874" data-zoom="17"><img src="vestminsterskiy_dvorec_6.jpg" alt="">Вестминстерский дворец</a></li>
+          <li><a class="item btn btn-primary" href="#" data-latitude="51.503331" data-longitude="-0.119522" data-zoom="17"><img src="londonglas.jpg" alt="">Лондонский глаз</a></li>
+          <li><a class="item btn btn-primary" href="#" data-latitude="51.505490" data-longitude="-0.075367" data-zoom="17"><img src="tauerskiy-most-25.jpg" alt="">Тауэрский мост</a></li>
+          <li><a class="item btn btn-primary" href="#" data-latitude="43.878847" data-longitude="-103.459077" data-zoom="17"><img src="mount_rushmore.jpg" alt="">Рашмор</a></li>
+          <li><a class="item btn btn-primary" href="#" data-latitude="43.642721" data-longitude="-79.387057" data-zoom="15"><img src="240px-Toronto_-_ON_-_Toronto_Harbourfront7.jpg" alt="">Си-Эн Тауэр</a></li>
+      </ul>
+    </div>
+
+    <div id="map" style="position: fixed; top: 0;left: 0;right: 0;bottom: 0;"></div>
+
+    <div class="list listr" style="">
+      <h3>Настройки</h3>
+      <ul>
+          <li style="border: 0">Погода</li>
+          <li><a class="btn btn-primary" href="#" onclick="map.themes.setWeather(L.Wrld.themes.weather.Clear)"><i class="fa fa-sun-o" aria-hidden="true"></i> Ясно</a></li>
+          <li><a class="btn btn-primary" href="#" onclick="map.themes.setWeather(L.Wrld.themes.weather.Rainy)"><i class="wi wi-rain" aria-hidden="true"></i> Дождь</a></li>
+          <li><a class="btn btn-primary" href="#" onclick="map.themes.setWeather(L.Wrld.themes.weather.Snowy)"><i class="wi wi-showers" aria-hidden="true"></i> Снег</a></li>
+          <li><a class="btn btn-primary" href="#" onclick="map.themes.setWeather(L.Wrld.themes.weather.Overcast)"><i class="fa fa-cloud" aria-hidden="true"></i> Облачно</a></li>
+          <li style="border: 0">Сезон</li>
+          <li><a class="btn btn-primary" href="#" onclick="map.themes.setSeason(L.Wrld.themes.season.Spring)"><i class="fa fa-leaf" aria-hidden="true"></i> Весна</a></li>
+          <li><a class="btn btn-primary" href="#" onclick="map.themes.setSeason(L.Wrld.themes.season.Summer)"><i class="wi wi-thermometer"></i> Лето</a></li>
+          <li><a class="btn btn-primary" href="#" onclick="map.themes.setSeason(L.Wrld.themes.season.Autumn)"><i class="fa fa-umbrella" aria-hidden="true"></i> Осень</a></li>
+          <li><a class="btn btn-primary" href="#" onclick="map.themes.setSeason(L.Wrld.themes.season.Winter)"><i class="fa fa-snowflake-o" aria-hidden="true"></i> Зима</a></li>
+          <li style="border: 0">Время</li>
+          <li><a class="btn btn-primary" href="#" onclick="map.themes.setTime(L.Wrld.themes.time.Dawn)"><i class="wi wi-day-sunny" aria-hidden="true"></i> Утро</a></li>
+          <li><a class="btn btn-primary" href="#" onclick="map.themes.setTime(L.Wrld.themes.time.Day)"><i class="wi wi-day-cloudy" aria-hidden="true"></i> День</a></li>
+          <li><a class="btn btn-primary" href="#" onclick="map.themes.setTime(L.Wrld.themes.time.Dusk)"><i class="wi wi-moon-alt-waning-gibbous-6" aria-hidden="true"></i> Вечер</a></li>
+          <li><a class="btn btn-primary" href="#" onclick="map.themes.setTime(L.Wrld.themes.time.Night)"><i class="fa fa-moon-o" aria-hidden="true"></i> Ночь</a></li>
+      </ul>
+    </div>
+
+    <script>
+
+    var map = L.eeGeo.map('map', 'a33a96d258312a6fb237efdd2e387c4a', {
+        center: [43.878847, -103.459077],
+        zoom: 0
+    });
+
+    document.addEventListener('DOMContentLoaded', function(){
+      var items = document.getElementsByClassName('item');
+
+      for (var i = 0, item; item = items[i]; i++)
+        item.onmousedown = clickItem;
+
+      function clickItem(event) {
+        event.preventDefault();
+        map.setView([parseFloat(this.dataset.latitude), parseFloat(this.dataset.longitude)], parseInt(this.dataset.zoom), {
+          animate: false
+        });
+
+        if(window.marker)
+          map.removeLayer(window.marker)
+
+        window.marker = L.marker([parseFloat(this.dataset.latitude), parseFloat(this.dataset.longitude)], {
+          elevation: 0,
+          title: this.textContent
+        }).addTo(map);
+
+         marker.bindPopup(this.textContent).openPopup();
+      }
+    });
+    
+    </script>
+</body>
+
+</html>
